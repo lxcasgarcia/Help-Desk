@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { prisma } from "../database/prisma";
 import { AppError } from "../utils/AppError";
+import { getAbsoluteImageUrl } from "../utils/UrlHelper";
 import { compare, hash } from "bcrypt";
 import { ProfileImageGenerator } from "../utils/ProfileImageGenerator";
 
@@ -184,18 +185,18 @@ class UsersController {
 
     // Adiciona dados específicos do perfil baseado no role
     if (user.role === "client" && user.clientProfile) {
-      profileData.profileImage = user.clientProfile.profileImage
-        ? `${baseUrl}${user.clientProfile.profileImage}`
-        : null;
+      profileData.profileImage = getAbsoluteImageUrl(
+        user.clientProfile.profileImage || null
+      );
     } else if (user.role === "technician" && user.technicianProfile) {
-      profileData.profileImage = user.technicianProfile.profileImage
-        ? `${baseUrl}${user.technicianProfile.profileImage}`
-        : null;
+      profileData.profileImage = getAbsoluteImageUrl(
+        user.technicianProfile.profileImage || null
+      );
       profileData.availability = user.technicianProfile.availability;
     } else if (user.role === "admin" && (user as any).adminProfile) {
-      profileData.profileImage = (user as any).adminProfile.profileImage
-        ? `${baseUrl}${(user as any).adminProfile.profileImage}`
-        : null;
+      profileData.profileImage = getAbsoluteImageUrl(
+        (user as any).adminProfile.profileImage || null
+      );
     }
 
     response.json(profileData);
