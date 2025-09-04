@@ -146,7 +146,11 @@ class ProfileImageGenerator {
   ): Promise<string> {
     const { name, size = 100, format = "png", saveLocally = true } = options;
 
-    if (saveLocally) {
+    // Estratégia controlada por env: 'external' não salva em disco
+    const strategy = (process.env.UPLOADS_STRATEGY || "local").toLowerCase();
+    const shouldSaveLocally = saveLocally && strategy !== "external";
+
+    if (shouldSaveLocally) {
       if (format === "svg") {
         // Gera e salva SVG localmente
         const svgContent = this.generateSVGContent(name, size);
@@ -160,10 +164,10 @@ class ProfileImageGenerator {
         const pngBuffer = Buffer.from(response.data);
         return await this.saveImageLocally(name, pngBuffer, "png");
       }
-    } else {
-      // Retorna URL externa se não for para salvar localmente
-      return this.getAvatarServiceURL(name, size);
     }
+
+    // Estratégia externa ou quando explicitamente não salvar local
+    return this.getAvatarServiceURL(name, size);
     throw new Error("Formato de imagem não suportado para geração.");
   }
 
@@ -177,6 +181,7 @@ class ProfileImageGenerator {
       small: await this.generateDefaultProfileImage({
         name,
         size: 50,
+        // respeita estratégia via env
         saveLocally: true,
       }),
       medium: await this.generateDefaultProfileImage({

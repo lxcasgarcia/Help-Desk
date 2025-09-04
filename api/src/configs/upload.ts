@@ -3,8 +3,18 @@ import path from "node:path";
 import crypto from "node:crypto";
 import fs from "node:fs";
 
-const TMP_FOLDER = path.resolve(__dirname, "..", "..", "tmp");
-const UPLOADS_FOLDER = path.resolve(TMP_FOLDER, "uploads");
+// Permite configurar diretórios via variáveis de ambiente para ambientes como Render
+const ENV_TMP_DIR = process.env.TMP_DIR;
+const ENV_UPLOADS_DIR = process.env.UPLOADS_DIR;
+
+// Diretórios padrão caem para a pasta do projeto quando não configurados
+const DEFAULT_TMP = path.resolve(__dirname, "..", "..", "tmp");
+const DEFAULT_UPLOADS = path.resolve(DEFAULT_TMP, "uploads");
+
+const TMP_FOLDER = ENV_TMP_DIR ? path.resolve(ENV_TMP_DIR) : DEFAULT_TMP;
+const UPLOADS_FOLDER = ENV_UPLOADS_DIR
+  ? path.resolve(ENV_UPLOADS_DIR)
+  : DEFAULT_UPLOADS;
 
 // Criar diretórios se não existirem
 if (!fs.existsSync(TMP_FOLDER)) {
