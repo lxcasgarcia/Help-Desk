@@ -5,13 +5,9 @@
   "main": "src/server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "npx prisma generate && tsc",
     "start": "node dist/server.js",
-    "postinstall": "npx prisma generate && npx prisma migrate deploy && npx prisma db seed",
-    "seed": "tsx prisma/seed.ts"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "postinstall": "npx prisma generate && npx prisma migrate deploy && npx prisma db seed"
   },
   "keywords": [],
   "author": "Lucas Garcia",
