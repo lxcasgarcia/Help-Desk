@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  technician
+  client
+}
+
+enum CallStatus {
+  open
+  in_progress
+  closed
+}
+
+model User {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+
+  role UserRole @default(client)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  adminProfile      AdminProfile?
+  technicianProfile TechnicianProfile?
+  clientProfile     ClientProfile?
+
+  @@map("users")
+}
+
+model AdminProfile {
+  id     String @id @default(uuid())
+  userId String @unique @map("user_id")
+
+  user         User    @relation(fields: [userId], references: [id])
+  profileImage String? @map("profile_image")
+
+  @@map("admins")
+}
+
+model TechnicianProfile {
+  id     String @id @default(uuid())
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  availability  String[]
+  profileImage  String?  @map("profile_image")
+  assignedCalls Call[]   @relation("TechnicianCalls")
+
+  @@map("technicians")
+}
+
+model ClientProfile {
+  id     String @id @default(uuid())
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  profileImage String? @map("profile_image")
+  createdCalls Call[]  @relation("ClientCalls")
+
+  @@map("clients")
+}
+
+model Service {
+  id     String        @id @default(uuid())
+  name   String        @unique
+  value  Float
+  active Boolean       @default(true)
+  calls  CallService[]
+
+  @@map("services")
+}
+
+model Call {
+  id          String     @id @default(uuid())
+  name        String
+  description String
+  status      CallStatus @default(open)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime?  @updatedAt @map("updated_at")
+
+  clientId String
+  client   ClientProfile @relation("ClientCalls", fields: [clientId], references: [id])
+
+  technicianId String
+  technician   TechnicianProfile @relation("TechnicianCalls", fields: [technicianId], references: [id])
+
+  services CallService[]
+
+  @@map("calls")
+}
+
+model CallService {
+  callId    String
+  serviceId String
+
+  call    Call    @relation(fields: [callId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+
+  assignedValue Float @map("assigned_value")
+
+  @@id([callId, serviceId])
+  @@map("call_services")
+}
