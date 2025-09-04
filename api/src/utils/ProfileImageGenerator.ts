@@ -136,7 +136,8 @@ class ProfileImageGenerator {
     } else if (format === "png") {
       await fs.writeFile(filePath, content as Buffer);
     }
-    return `/${fileName}`;
+    // Retorna caminho servível pelo Express: /uploads/<file>
+    return `/uploads/${fileName}`;
   }
 
   // Gera imagem de perfil padrão e opcionalmente salva localmente

@@ -8,9 +8,15 @@ import { CallStatus } from "@prisma/client";
 class CallsController {
   // Atribui técnico automaticamente baseado em disponibilidade e carga de trabalho
   private assignTechnician = async (): Promise<string> => {
-    const currentTime = new Date();
-    const currentHour = currentTime.getHours();
-    const currentMinute = currentTime.getMinutes();
+    // Ajusta para timezone do Brasil se variável TZ não estiver setada adequadamente
+    const now = new Date();
+    const localeTime = new Date(
+      now.toLocaleString("pt-BR", {
+        timeZone: process.env.TZ || "America/Sao_Paulo",
+      })
+    );
+    const currentHour = localeTime.getHours();
+    const currentMinute = localeTime.getMinutes();
     const currentTimeString = `${currentHour
       .toString()
       .padStart(2, "0")}:${currentMinute.toString().padStart(2, "0")}`;
