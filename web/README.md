@@ -4,7 +4,7 @@ Interface web da plataforma de gerenciamento de chamados desenvolvida com React,
 
 ## 🌐 Deploy
 
-**Aplicação online:** [https://help-desk-falytly4a-lxcasgarcia09-gmailcoms-projects.vercel.app](https://help-desk-falytly4a-lxcasgarcia09-gmailcoms-projects.vercel.app)
+**Aplicação online:** [https://help-desk-git-master-lxcasgarcia09-gmailcoms-projects.vercel.app](https://help-desk-git-master-lxcasgarcia09-gmailcoms-projects.vercel.app)
 
 ## 🎯 Sobre o Frontend
 

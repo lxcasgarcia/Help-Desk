@@ -4,7 +4,7 @@ API REST completa para o sistema de gerenciamento de chamados desenvolvida com N
 
 ## 🌐 Deploy
 
-**API online:** [https://help-desk-1-qfgm.onrender.com](https://help-desk-1-qfgm.onrender.com)
+**API online:** [https://help-desk-y1w4.onrender.com](https://help-desk-y1w4.onrender.com)
 
 ## 🎯 Sobre o Backend
 

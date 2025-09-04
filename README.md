@@ -4,8 +4,8 @@ Sistema completo de gerenciamento de chamados desenvolvido como projeto final do
 
 ## 🌐 Deploy
 
-- **Backend (API):** [https://help-desk-1-qfgm.onrender.com](https://help-desk-1-qfgm.onrender.com)
-- **Frontend (Web):** [https://help-desk-falytly4a-lxcasgarcia09-gmailcoms-projects.vercel.app](https://help-desk-falytly4a-lxcasgarcia09-gmailcoms-projects.vercel.app)
+- **Backend (API):** [https://help-desk-y1w4.onrender.com](https://help-desk-y1w4.onrender.com)
+- **Frontend (Web):** [https://help-desk-git-master-lxcasgarcia09-gmailcoms-projects.vercel.app](https://help-desk-git-master-lxcasgarcia09-gmailcoms-projects.vercel.app)
 
 ## 🎯 Sobre o Projeto
 
