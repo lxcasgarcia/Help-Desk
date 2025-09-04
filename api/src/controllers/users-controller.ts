@@ -3,8 +3,8 @@ import { z } from "zod";
 import { prisma } from "../database/prisma";
 import { AppError } from "../utils/AppError";
 import { getAbsoluteImageUrl } from "../utils/UrlHelper";
-import { compare, hash } from "bcrypt";
 import { ProfileImageGenerator } from "../utils/ProfileImageGenerator";
+import { compare, hash } from "bcrypt";
 
 // Enum para definir os roles disponíveis no sistema
 enum UserRole {
@@ -188,14 +188,26 @@ class UsersController {
       profileData.profileImage = getAbsoluteImageUrl(
         user.clientProfile.profileImage || null
       );
+      // Adiciona dados de fallback para avatar
+      profileData.avatarFallback = ProfileImageGenerator.getAvatarFallbackData(
+        user.name
+      );
     } else if (user.role === "technician" && user.technicianProfile) {
       profileData.profileImage = getAbsoluteImageUrl(
         user.technicianProfile.profileImage || null
       );
       profileData.availability = user.technicianProfile.availability;
+      // Adiciona dados de fallback para avatar
+      profileData.avatarFallback = ProfileImageGenerator.getAvatarFallbackData(
+        user.name
+      );
     } else if (user.role === "admin" && (user as any).adminProfile) {
       profileData.profileImage = getAbsoluteImageUrl(
         (user as any).adminProfile.profileImage || null
+      );
+      // Adiciona dados de fallback para avatar
+      profileData.avatarFallback = ProfileImageGenerator.getAvatarFallbackData(
+        user.name
       );
     }
 

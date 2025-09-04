@@ -7,6 +7,7 @@ import { techniciansRoutes } from "./technicians-routes";
 import { clientsRoutes } from "./client-routes";
 import { servicesRoutes } from "./services-routes";
 import { uploadsRoutes } from "./uploads-routes";
+import { avatarRoutes } from "./avatar-routes";
 import { ensureAuthenticated } from "../middlewares/ensure-authenticated";
 
 const routes = Router();
@@ -18,5 +19,6 @@ routes.use("/technicians", ensureAuthenticated, techniciansRoutes);
 routes.use("/clients", ensureAuthenticated, clientsRoutes);
 routes.use("/services", ensureAuthenticated, servicesRoutes);
 routes.use("/uploads", ensureAuthenticated, uploadsRoutes);
+routes.use("/avatar", avatarRoutes);
 
 export { routes };

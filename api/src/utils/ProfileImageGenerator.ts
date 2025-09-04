@@ -112,9 +112,10 @@ class ProfileImageGenerator {
       ""
     );
 
+    // Usa serviço mais confiável com parâmetros otimizados
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(
       initials
-    )}&size=${size}&background=${backgroundColor}&color=${textColor}&bold=true&format=png`;
+    )}&size=${size}&background=${backgroundColor}&color=${textColor}&bold=true&format=png&font-size=0.4&rounded=true`;
   }
 
   /**
@@ -156,19 +157,47 @@ class ProfileImageGenerator {
         const svgContent = this.generateSVGContent(name, size);
         return await this.saveImageLocally(name, svgContent, "svg");
       } else if (format === "png") {
-        // Baixa PNG de serviço externo e salva localmente
-        const imageUrl = this.getAvatarServiceURL(name, size);
-        const response = await axios.get(imageUrl, {
-          responseType: "arraybuffer",
-        });
-        const pngBuffer = Buffer.from(response.data);
+        // Gera PNG localmente usando Sharp (mais confiável)
+        const pngBuffer = await this.generatePNGLocally(name, size);
         return await this.saveImageLocally(name, pngBuffer, "png");
       }
     }
 
-    // Estratégia externa ou quando explicitamente não salvar local
-    return this.getAvatarServiceURL(name, size);
-    throw new Error("Formato de imagem não suportado para geração.");
+    // Estratégia dinâmica: usa endpoint interno para gerar avatares
+    const baseUrl = process.env.BASE_URL || "http://localhost:3333";
+    return `${baseUrl}/avatar/${encodeURIComponent(
+      name
+    )}?size=${size}&format=${format}`;
+  }
+
+  // Gera PNG localmente usando Sharp (mais confiável)
+  static async generatePNGLocally(
+    name: string,
+    size: number = 100
+  ): Promise<Buffer> {
+    const initials = this.getInitials(name);
+    const backgroundColor = this.getColorFromName(name);
+    const textColor = this.getContrastColor(backgroundColor);
+    const fontSize = Math.round(size * 0.4);
+
+    // Cria SVG
+    const svgContent = `
+      <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+        <rect width="${size}" height="${size}" fill="${backgroundColor}" rx="${
+      size / 2
+    }"/>
+        <text x="50%" y="50%" text-anchor="middle" dy="0.35em" 
+              font-family="Arial, sans-serif" font-size="${fontSize}" 
+              font-weight="bold" fill="${textColor}">
+          ${initials}
+        </text>
+      </svg>
+    `.trim();
+
+    // Converte SVG para PNG usando Sharp
+    const pngBuffer = await sharp(Buffer.from(svgContent)).png().toBuffer();
+
+    return pngBuffer;
   }
 
   // Gera múltiplos tamanhos de imagem de perfil salvando localmente
@@ -258,6 +287,23 @@ class ProfileImageGenerator {
       backgroundColor,
       textColor,
       imageUrl,
+    };
+  }
+
+  // Gera dados de avatar para fallback no frontend (sem URL externa)
+  static getAvatarFallbackData(name: string): {
+    initials: string;
+    backgroundColor: string;
+    textColor: string;
+  } {
+    const initials = this.getInitials(name);
+    const backgroundColor = this.getColorFromName(name);
+    const textColor = this.getContrastColor(backgroundColor);
+
+    return {
+      initials,
+      backgroundColor,
+      textColor,
     };
   }
 }
